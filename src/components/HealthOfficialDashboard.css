@@ -1,0 +1,112 @@
+.health-dashboard {
+  max-width: 900px;
+  margin: 32px auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 32px 24px 24px 24px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.health-dashboard header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.dashboard-controls {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-bar {
+  padding: 8px 12px;
+  border: 1px solid #bdbdbd;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 220px;
+}
+
+.company-dropdown {
+  padding: 8px 12px;
+  border: 1px solid #bdbdbd;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 200px;
+}
+
+.company-employee-section {
+  margin-top: 16px;
+}
+
+.company-employee-section h2 {
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+  color: #2d3a4a;
+}
+
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 12px;
+}
+
+.employee-table th,
+.employee-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: center;
+}
+
+.employee-table th {
+  background: #f5f7fa;
+  color: #333;
+  font-weight: 600;
+}
+
+.employee-table td {
+  font-size: 1rem;
+}
+
+.action-btn {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.98rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.view-btn {
+  background: #1976d2;
+  color: #fff;
+}
+
+.view-btn:hover {
+  background: #1256a2;
+}
+
+.register-btn {
+  background: #e53935;
+  color: #fff;
+}
+
+.register-btn:hover {
+  background: #b71c1c;
+}
+
+@media (max-width: 700px) {
+  .health-dashboard {
+    padding: 12px 4px;
+  }
+  .dashboard-controls {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .employee-table th, .employee-table td {
+    padding: 6px 2px;
+    font-size: 0.95rem;
+  }
+}

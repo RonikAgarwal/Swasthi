@@ -1,0 +1,251 @@
+body {
+  background: linear-gradient(135deg, #e3f0ff 0%, #e0f7fa 100%);
+  margin: 0;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+
+.company-dashboard-bg {
+  background: linear-gradient(135deg, #e3f0ff 0%, #e0f7fa 100%);
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+
+.company-dashboard-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 28px;
+  box-shadow: 0 6px 32px rgba(25, 118, 210, 0.10);
+  padding-bottom: 36px;
+  position: relative;
+}
+
+.company-dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+  background: linear-gradient(90deg, #e3f0ff 60%, #e0f7fa 100%);
+  padding: 32px 48px 24px 48px;
+  border-bottom: 1.5px solid #e3f0ff;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.04);
+}
+
+.company-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #e3f0ff;
+  padding: 8px;
+}
+
+.company-dashboard-title {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #1976d2;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+}
+
+.company-dashboard-subtitle {
+  font-size: 1.15rem;
+  color: #388e3c;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.logout-btn {
+  background: #d32f2f;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.9rem 2.5rem;
+  font-weight: 700;
+  font-size: 1.15rem;
+  box-shadow: 0 2px 8px rgba(211,47,47,0.08);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.divider {
+  border-bottom: 2px solid #e3f0ff;
+  margin: 0 48px 0 48px;
+}
+
+.company-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 32px 48px 0 48px;
+}
+
+.company-name-pill {
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: #1976d2;
+  letter-spacing: 0.5px;
+  background: #e3f0ff;
+  border-radius: 10px;
+  padding: 0.6rem 2.2rem 0.6rem 1.2rem;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.04);
+  display: inline-block;
+}
+
+.register-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.85rem 2.2rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.employee-list-section {
+  margin: 32px 48px 0 48px;
+}
+
+.employee-list-title {
+  font-weight: 800;
+  font-size: 2rem;
+  margin-bottom: 18px;
+  color: #111;
+}
+
+.employee-table-container {
+  background: #f8fcff;
+  border-radius: 22px;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.04);
+  overflow: hidden;
+}
+
+.employee-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.employee-table th {
+  padding: 18px 0;
+  font-weight: 700;
+  color: #333;
+  font-size: 1.15rem;
+  border-bottom: 2px solid #e3f0ff;
+  background: #f0f7fa;
+  text-align: center;
+}
+
+.employee-table td {
+  padding: 16px 0;
+  font-weight: 500;
+  color: #222;
+  font-size: 1.08rem;
+  text-align: center;
+  background: #f8fcff;
+}
+
+.status-registered {
+  background: #e3f0ff;
+  color: #1976d2;
+  font-weight: 700;
+  border-radius: 18px;
+  padding: 0.35rem 1.2rem;
+  font-size: 1.08rem;
+  display: inline-block;
+}
+
+.status-unregistered {
+  background: #fdeaea;
+  color: #d32f2f;
+  font-weight: 700;
+  border-radius: 18px;
+  padding: 0.35rem 1.2rem;
+  font-size: 1.08rem;
+  display: inline-block;
+}
+
+.action-icon {
+  font-size: 1.25rem;
+  cursor: pointer;
+  margin-right: 16px;
+  vertical-align: middle;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.action-icon.edit {
+  color: #1976d2;
+}
+
+.action-icon.delete {
+  color: #d32f2f;
+}
+
+.dashboard-footer {
+  margin: 32px 48px 0 48px;
+  color: #888;
+  font-size: 1rem;
+  text-align: left;
+  padding-top: 18px;
+  border-top: 1px solid #e3f0ff;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.18);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 18px;
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  box-shadow: 0 6px 32px rgba(25, 118, 210, 0.13);
+  min-width: 340px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.modal-input {
+  padding: 0.7rem 1.1rem;
+  border: 1.5px solid #e3f0ff;
+  border-radius: 8px;
+  font-size: 1.08rem;
+  margin-bottom: 0.5rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1.2rem;
+  margin-top: 0.5rem;
+}
+
+.landing-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.6rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.landing-btn.cancel-btn {
+  background: #e0e0e0;
+  color: #333;
+}

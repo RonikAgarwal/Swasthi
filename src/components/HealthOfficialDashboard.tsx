@@ -26,11 +26,11 @@ const employeesData = [
 // Dummy disease data for the tally/bar chart
 const diseaseStats = [
   { disease: 'Dengue', infected: 820, cured: 700, dead: 22 },
-  { disease: 'Malaria', infected: 610, cured: 590, dead: 15 },
+  { disease: 'Malaria', infected: 600, cured: 590, dead: 10 },
   { disease: 'COVID-19', infected: 950, cured: 900, dead: 38 },
   { disease: 'Typhoid', infected: 540, cured: 520, dead: 10 },
   { disease: 'Chikungunya', infected: 430, cured: 400, dead: 12 },
-  { disease: 'Diarrhea', infected: 780, cured: 760, dead: 18 },
+  { disease: 'Influenza', infected: 780, cured: 760, dead: 18 },
 ];
 
 const maxBar = Math.max(...diseaseStats.map(d => d.infected));

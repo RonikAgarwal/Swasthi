@@ -67,13 +67,13 @@ const LandingPage: React.FC<LandingProps> = ({
         <h3>Disease Outbreak Alerts</h3>
         <div className="disease-banner">
           <span className="disease-alert">
-            Dengue: 12 <span className="alert-badge">ALERT</span>
-          </span>
-          <span>Malaria: 5</span>
-          <span>COVID-19: 2</span>
-          <span>Typhoid: 3</span>
-          <span>Chikungunya: 1</span>
-          <span>Diarrhea: 4</span>
+            COVID-19: 950 <span className="alert-badge">ALERT</span>
+          </span>  
+          <span>Malaria: 600</span>
+          <span>Dengue: 820</span>
+          <span>Typhoid: 540</span>
+          <span>Chikungunya: 430</span>
+          <span>Influenza: 780</span>
         </div>
         <p className="banner-note">
           Publicly visible summary. Real-time alerts highlighted.

@@ -64,7 +64,7 @@ const LandingPage: React.FC<LandingProps> = ({
         </button>
       </div>
       <div className="banner-section">
-        <h3>Disease Tally / Alerts</h3>
+        <h3>Disease Outbreak Alerts</h3>
         <div className="disease-banner">
           <span className="disease-alert">
             Dengue: 12 <span className="alert-badge">ALERT</span>

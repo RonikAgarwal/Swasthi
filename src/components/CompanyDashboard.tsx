@@ -19,6 +19,20 @@ const initialEmployees: Employee[] = [
   { id: 'EMP004', name: 'Rahul Das', place: 'Alappuzha', status: 'Unregistered' },
 ];
 
+// Dummy attendance initial state
+type Attendance = {
+  totalDays: number;
+  leaves: number;
+  continuousLeaves: number;
+  status: "Present" | "On Leave";
+};
+const initialAttendance: Record<string, Attendance> = {
+  EMP001: { totalDays: 22, leaves: 2, continuousLeaves: 1, status: "Present" },
+  EMP002: { totalDays: 20, leaves: 6, continuousLeaves: 6, status: "On Leave" },
+  EMP003: { totalDays: 18, leaves: 4, continuousLeaves: 2, status: "Present" },
+  EMP004: { totalDays: 21, leaves: 5, continuousLeaves: 5, status: "On Leave" },
+};
+
 const CompanyDashboard: React.FC<CompanyDashboardProps> = ({ onLogout }) => {
   const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -31,6 +45,11 @@ const CompanyDashboard: React.FC<CompanyDashboardProps> = ({ onLogout }) => {
     id: '',
     place: '',
   });
+
+  // Attendance modal state
+  const [attendance, setAttendance] = useState<Record<string, Attendance>>(initialAttendance);
+  const [attendanceModalOpen, setAttendanceModalOpen] = useState(false);
+  const [attendanceEmpId, setAttendanceEmpId] = useState<string | null>(null);
 
   // Open Add Modal
   const handleAdd = () => {
@@ -45,6 +64,10 @@ const CompanyDashboard: React.FC<CompanyDashboardProps> = ({ onLogout }) => {
       ...employees,
       { name: form.name.trim(), id: form.id.trim(), place: form.place.trim(), status: 'Unregistered' },
     ]);
+    setAttendance(prev => ({
+      ...prev,
+      [form.id.trim()]: { totalDays: 0, leaves: 0, continuousLeaves: 0, status: "Present" }
+    }));
     setShowAddModal(false);
   };
 
@@ -77,9 +100,61 @@ const CompanyDashboard: React.FC<CompanyDashboardProps> = ({ onLogout }) => {
   // Delete Employee
   const handleDelete = (idx: number) => {
     if (window.confirm('Are you sure you want to delete this employee?')) {
+      const empId = employees[idx].id;
       setEmployees(employees.filter((_, i) => i !== idx));
+      setAttendance(prev => {
+        const copy = { ...prev };
+        delete copy[empId];
+        return copy;
+      });
     }
   };
+
+  // Attendance modal logic
+  const openAttendanceModal = (empId: string) => {
+    setAttendanceEmpId(empId);
+    setAttendanceModalOpen(true);
+  };
+
+  const closeAttendanceModal = () => {
+    setAttendanceModalOpen(false);
+    setAttendanceEmpId(null);
+  };
+
+  const handleAttendanceChange = (field: keyof Attendance, value: string | number) => {
+    if (!attendanceEmpId) return;
+    setAttendance(prev => ({
+      ...prev,
+      [attendanceEmpId]: {
+        ...prev[attendanceEmpId],
+        [field]: field === "totalDays" || field === "leaves" || field === "continuousLeaves" ? Number(value) : value,
+      },
+    }));
+  };
+
+  // Attendance status color
+  const getStatusColor = (att: Attendance) => {
+    if (att.status === "Present") return "#388e3c";
+    if (att.continuousLeaves > 5) return "#d32f2f";
+    return "#fbc02d";
+  };
+
+  // Attendance warning
+  const getAttendanceWarning = (att: Attendance) => {
+    if (att.continuousLeaves > 5) {
+      return (
+        <div style={{ color: "#d32f2f", fontWeight: 700, fontSize: "1.05rem", marginBottom: 8 }}>
+  ⚠️ Continuous leave exceeded 5 days. Company must check up on the worker.
+  <div>📩 Mail sent to the employee to report at the company officials' desk</div>
+</div>
+      );
+    }
+    return null;
+  };
+
+  // Attendance modal content
+  const modalEmp = attendanceEmpId ? employees.find(e => e.id === attendanceEmpId) : null;
+  const modalAttendance = attendanceEmpId ? attendance[attendanceEmpId] : null;
 
   return (
     <div className="company-dashboard-bg">
@@ -123,6 +198,7 @@ const CompanyDashboard: React.FC<CompanyDashboardProps> = ({ onLogout }) => {
                   <th>Place of Origin</th>
                   <th>Status of Swasthi ID</th>
                   <th>Actions</th>
+                  <th>Attendance</th>
                 </tr>
               </thead>
               <tbody>
@@ -160,11 +236,28 @@ const CompanyDashboard: React.FC<CompanyDashboardProps> = ({ onLogout }) => {
                         </svg>
                       </button>
                     </td>
+                    <td>
+                      <button
+                        style={{
+                          background: "#1976d2",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "8px",
+                          padding: "0.6rem 1.6rem",
+                          fontWeight: 700,
+                          fontSize: "1.05rem",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => openAttendanceModal(emp.id)}
+                      >
+                        Daily Check-In
+                      </button>
+                    </td>
                   </tr>
                 ))}
                 {employees.length === 0 && (
                   <tr>
-                    <td colSpan={5} style={{ textAlign: 'center', color: '#888' }}>No employees found.</td>
+                    <td colSpan={6} style={{ textAlign: 'center', color: '#888' }}>No employees found.</td>
                   </tr>
                 )}
               </tbody>
@@ -243,8 +336,156 @@ const CompanyDashboard: React.FC<CompanyDashboardProps> = ({ onLogout }) => {
           </div>
         </div>
       )}
+
+      {/* Attendance Modal */}
+      {attendanceModalOpen && modalEmp && modalAttendance && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.18)",
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: "18px",
+              padding: "2.5rem 2.5rem 2rem 2.5rem",
+              boxShadow: "0 6px 32px rgba(25, 118, 210, 0.13)",
+              minWidth: 320,
+              maxWidth: "90vw",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "1.2rem",
+            }}
+          >
+            <h2 style={{ color: "#1976d2", fontWeight: 700, marginBottom: 0 }}>
+              Attendance Check-In
+            </h2>
+            <div style={{ fontWeight: 600, fontSize: "1.1rem", marginBottom: 8 }}>
+              {modalEmp.name} <span style={{ color: "#1976d2" }}>({modalEmp.id})</span>
+            </div>
+            <div style={{ width: "100%", marginBottom: 10, display: "flex", gap: 12 }}>
+              <div style={{ flex: 1 }}>
+                <label style={labelStyle}>Total Leaves Taken</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={modalAttendance.leaves}
+                  onChange={e => handleAttendanceChange("leaves", e.target.value)}
+                  style={inputStyle}
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={labelStyle}>Continuous Leave Taken</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={modalAttendance.continuousLeaves}
+                  onChange={e => handleAttendanceChange("continuousLeaves", e.target.value)}
+                  style={inputStyle}
+                />
+              </div>
+            </div>
+            <div style={{ width: "100%", marginBottom: 10 }}>
+              <label style={labelStyle}>Total Attendance Days</label>
+              <input
+                type="number"
+                min={0}
+                value={modalAttendance.totalDays}
+                onChange={e => handleAttendanceChange("totalDays", e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+            <div style={{ width: "100%", marginBottom: 10 }}>
+              <label style={labelStyle}>Current Leave Status</label>
+              <select
+                value={modalAttendance.status}
+                onChange={e => handleAttendanceChange("status", e.target.value)}
+                style={{
+                  ...inputStyle,
+                  color: getStatusColor(modalAttendance),
+                  fontWeight: 700,
+                  background: "#f8fafc"
+                }}
+              >
+                <option value="Present">Present</option>
+                <option value="On Leave">On Leave</option>
+              </select>
+            </div>
+            {/* Status color and warning */}
+            <div style={{ margin: "0.5rem 0", fontWeight: 700, fontSize: "1.08rem", color: getStatusColor(modalAttendance) }}>
+              {modalAttendance.status === "Present" && "Present"}
+              {modalAttendance.status === "On Leave" && modalAttendance.continuousLeaves <= 5 && "On Leave"}
+              {modalAttendance.status === "On Leave" && modalAttendance.continuousLeaves > 5 && "On Leave"}
+            </div>
+            {getAttendanceWarning(modalAttendance)}
+            <div style={{ display: "flex", gap: 16, marginTop: 16 }}>
+              <button
+                style={{
+                  background: "#388e3c",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: "0.7rem 1.6rem",
+                  fontWeight: 700,
+                  fontSize: "1.08rem",
+                  cursor: "pointer",
+                }}
+                onClick={closeAttendanceModal}
+              >
+                Save
+              </button>
+              <button
+                style={{
+                  background: "#e0e0e0",
+                  color: "#333",
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: "0.7rem 1.6rem",
+                  fontWeight: 700,
+                  fontSize: "1.08rem",
+                  cursor: "pointer",
+                }}
+                onClick={closeAttendanceModal}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
+};
+
+const labelStyle: React.CSSProperties = {
+  fontWeight: 700,
+  color: "#2563eb",
+  marginBottom: "0.2rem",
+  marginLeft: "2px",
+  fontSize: "1.08rem",
+  letterSpacing: "0.01em",
+  display: "block"
+};
+
+const inputStyle: React.CSSProperties = {
+  padding: "0.5rem 1rem",
+  border: "1px solid #cbd5e1",
+  borderRadius: "8px",
+  fontSize: "1.08rem",
+  marginBottom: "0.2rem",
+  width: "100%",
+  background: "#f8fafc",
+  fontWeight: 500,
 };
 
 export default CompanyDashboard;

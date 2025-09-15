@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HealthOfficialDashboard.css';
+import greyFingerprint from '../assets/fingerprint-grey.png';
+import greenFingerprint from '../assets/fingerprint-green.png';
 
 const companies = [
   { id: 'C1', name: 'Acme Corp' },
@@ -40,6 +42,11 @@ const HealthOfficialDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout
   const [searchId, setSearchId] = useState('');
   const navigate = useNavigate();
 
+  // Fingerprint modal states
+  const [fingerprintModalOpen, setFingerprintModalOpen] = useState(false);
+  const [fingerStatus, setFingerStatus] = useState<"idle" | "verifying" | "success">("idle");
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
+
   // Get registered employees from sessionStorage
   const registeredEmployees = JSON.parse(sessionStorage.getItem("registeredEmployees") || "{}");
 
@@ -75,6 +82,29 @@ const HealthOfficialDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout
     sessionStorage.removeItem('selectedCompany');
     if (onLogout) onLogout();
     navigate('/');
+  };
+
+  // Handle View DHC click (show fingerprint modal)
+  const handleViewDHC = (empId: string) => {
+    setSelectedEmployeeId(empId);
+    setFingerprintModalOpen(true);
+    setFingerStatus("idle");
+  };
+
+  // Simulate fingerprint verification
+  const handleVerifyFingerprint = () => {
+    setFingerStatus("verifying");
+    setTimeout(() => {
+      setFingerStatus("success");
+    }, 3000);
+  };
+
+  // After verification, go to DHCoutput
+  const handleDone = () => {
+    setFingerprintModalOpen(false);
+    if (selectedEmployeeId) {
+      navigate(`/dhcoutput/${selectedEmployeeId}`);
+    }
   };
 
   return (
@@ -180,9 +210,27 @@ const HealthOfficialDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout
                     <td>
                       {swasthiId ? (
                         <button
-                          onClick={() => navigate(`/dhcoutput/${emp.id}`)}
+                          onClick={() => handleViewDHC(emp.id)}
                           className="action-btn view-btn"
+                          style={{
+                            background: "#1976d2",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "8px",
+                            padding: "0.6rem 1.6rem",
+                            fontWeight: 700,
+                            fontSize: "1.05rem",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 10,
+                          }}
                         >
+                          <img
+                            src={greyFingerprint}
+                            alt="Fingerprint"
+                            style={{ width: 22, height: 22 }}
+                          />
                           View DHC
                         </button>
                       ) : (
@@ -248,6 +296,144 @@ const HealthOfficialDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout
           <span style={{ marginRight: 18 }}><span style={{ color: '#2563eb', fontWeight: 700 }}>■</span> Infected</span>
         </div>
       </section>
+
+      {/* Fingerprint Verification Modal */}
+      {fingerprintModalOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.18)",
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: "18px",
+              padding: "2.5rem 2.5rem 2rem 2.5rem",
+              boxShadow: "0 6px 32px rgba(25, 118, 210, 0.13)",
+              minWidth: 320,
+              maxWidth: "90vw",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "1.2rem",
+            }}
+          >
+            <h2 style={{ color: "#1976d2", fontWeight: 700, marginBottom: 0 }}>
+              Fingerprint Verification
+            </h2>
+            {/* Fingerprint image simulation */}
+            <div
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: "50%",
+                background: "#f5f5f5",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0.5rem 0 1rem 0",
+                transition: "background 0.3s",
+              }}
+            >
+              <img
+                src={fingerStatus === "success" ? greenFingerprint : greyFingerprint}
+                alt="Fingerprint"
+                style={{
+                  width: 60,
+                  height: 60,
+                  transition: "filter 0.3s",
+                }}
+              />
+            </div>
+            {/* Status and buttons */}
+            {fingerStatus === "idle" && (
+              <button
+                style={{
+                  background: "#1976d2",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: "0.7rem 1.6rem",
+                  fontWeight: 700,
+                  fontSize: "1.08rem",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+                onClick={handleVerifyFingerprint}
+              >
+                <img
+                  src={greyFingerprint}
+                  alt="Fingerprint"
+                  style={{ width: 24, height: 24 }}
+                />
+                Verify Fingerprint
+              </button>
+            )}
+            {fingerStatus === "verifying" && (
+              <div style={{ color: "#1976d2", fontWeight: 600, fontSize: "1.1rem" }}>
+                Verifying... Please place your finger
+              </div>
+            )}
+            {fingerStatus === "success" && (
+              <>
+                <div style={{ color: "#388e3c", fontWeight: 700, fontSize: "1.1rem", display: "flex", alignItems: "center", gap: 8 }}>
+                  <img
+                    src={greenFingerprint}
+                    alt="Fingerprint"
+                    style={{ width: 24, height: 24 }}
+                  />
+                  Fingerprint Verified!
+                </div>
+                <button
+                  style={{
+                    background: "#388e3c",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "8px",
+                    padding: "0.7rem 1.6rem",
+                    fontWeight: 700,
+                    fontSize: "1.08rem",
+                    cursor: "pointer",
+                  }}
+                  onClick={handleDone}
+                >
+                  Done
+                </button>
+              </>
+            )}
+            {/* Close modal if not verifying or success */}
+            {fingerStatus === "idle" && (
+              <button
+                style={{
+                  background: "#e0e0e0",
+                  color: "#333",
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: "0.6rem 1.2rem",
+                  fontWeight: 600,
+                  fontSize: "1rem",
+                  marginTop: "0.5rem",
+                  cursor: "pointer",
+                }}
+                onClick={() => setFingerprintModalOpen(false)}
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
